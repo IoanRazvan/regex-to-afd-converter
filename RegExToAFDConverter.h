@@ -49,7 +49,6 @@ private:
     std::map<int, char> indexToLetter;
     std::map<int, std::set<int>> followPosTable;
     std::string expression;
-    // std::string postfixExpression;
     std::string extendedPostfixExpression;
 
     void readAlphabet(std::ifstream &fin);
@@ -57,21 +56,21 @@ private:
     void readExpression(std::ifstream &fin);
     void setExtendedPostfixExpression();
     std::string convertExpressionToPostfixForm();
-    void handleOperator(char op, std::stack<char> &operatorsStack, std::queue<char> &postfixQueue);
-    bool compareOperatorPrecedence(char, char);
-    void addRemainingOperators(std::stack<char> &operatorsStack, std::queue<char> &postfixQueue);
-    std::string convertPostfixQueueToString(std::queue<char> &postfixQueue);
+    static void handleOperator(char op, std::stack<char> &operatorsStack, std::queue<char> &postfixQueue);
+    static bool compareOperatorPrecedence(char, char);
+    static void addRemainingOperators(std::stack<char> &operatorsStack, std::queue<char> &postfixQueue);
+    static std::string convertPostfixQueueToString(std::queue<char> &postfixQueue);
     void parseExtendedPostfixExpression();
     void traverseKleeneStarNode(std::stack<Node> & depthFirstStack);
     void traverseUnionNode(std::stack<Node> & depthFirstStack);
     void traverseConcatenationNode(std::stack<Node> & depthFirstStack);
-    std::set<int> getConcatenationNodeFirstPos(Node &right, Node &left);
-    std::set<int> getConcatenationNodeLastPos(Node &right, Node &left);
+    static std::set<int> getConcatenationNodeFirstPos(Node &right, Node &left);
+    static std::set<int> getConcatenationNodeLastPos(Node &right, Node &left);
     void setAFD();
     std::map<char, std::set<int>> groupPositionsByLetter(std::set<int> &positions);
     std::set<int> getUnionOfPositionsFollowPos(std::set<int> &positions);
     void addNextStatesForCurrentState(AFDNode *currentState, std::set<AFDNode *> &breadthFirstQueue, std::deque<AFDNode *> &visitedNodes);
-    std::string positionsToString(const std::set<int> & positions);
+    static std::string positionsToString(const std::set<int> & positions);
     void writeStartAndFinalStates(std::ofstream & fout);
     void writeTransitions(std::ofstream & fout, AFDNode * currentNode, std::queue<AFDNode *> & breadthFirstQueue);
 

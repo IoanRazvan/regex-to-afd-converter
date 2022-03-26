@@ -314,6 +314,7 @@ void RegExToAFDConverter::writeDOTFile(const std::string &outputFilename)
     std::ofstream fout(outputFilename);
     std::queue<AFDNode *> breadthFirstQueue;
     std::set<AFDNode *> visited;
+    fout << "digraph {\n";
     writeStartAndFinalStates(fout);
     breadthFirstQueue.push(afd.startNode);
     while (!breadthFirstQueue.empty())
@@ -331,7 +332,6 @@ void RegExToAFDConverter::writeDOTFile(const std::string &outputFilename)
 }
 
 void RegExToAFDConverter::writeStartAndFinalStates(std::ofstream & fout) {
-    fout << "digraph {\n";
     fout << std::move(positionsToString(afd.startNode->pos)) << "[color=red]\n";
     for (AFDNode *finalNode : afd.finalNodes)
     {
