@@ -332,10 +332,11 @@ void RegExToAFDConverter::writeDOTFile(const std::string &outputFilename)
 }
 
 void RegExToAFDConverter::writeStartAndFinalStates(std::ofstream & fout) {
-    fout << std::move(positionsToString(afd.startNode->pos)) << "[color=red]\n";
+    fout << "\"\"[shape=none, height=.0, width=.0]";
+    fout << "\"\"->" << std::move(positionsToString(afd.startNode->pos)) << std::endl;
     for (AFDNode *finalNode : afd.finalNodes)
     {
-        fout << std::move(positionsToString(finalNode->pos)) << "[color=blue]\n";
+        fout << std::move(positionsToString(finalNode->pos)) << "[peripheries=2]\n";
     }
 }
 
