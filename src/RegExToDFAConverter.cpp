@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <exception>
-#include "RegExToAFDConverter.h"
+#include "RegExToDFAConverter.h"
 
-void RegExToAFDConverter::parseFile()
+void RegExToDFAConverter::parseFile()
 {
     std::ifstream fin(filename);
     if (!fin.is_open())
@@ -14,7 +14,7 @@ void RegExToAFDConverter::parseFile()
     fin.close();
 }
 
-void RegExToAFDConverter::readAlphabet(std::ifstream &fin)
+void RegExToDFAConverter::readAlphabet(std::ifstream &fin)
 {
     std::string alphabet;
     std::getline(fin, alphabet);
@@ -25,7 +25,7 @@ void RegExToAFDConverter::readAlphabet(std::ifstream &fin)
     setAlphabet(alphabet);
 }
 
-void RegExToAFDConverter::setAlphabet(const std::string &alphabet)
+void RegExToDFAConverter::setAlphabet(const std::string &alphabet)
 {
     size_t prev_pos = 0;
     size_t pos = alphabet.find(' ');
@@ -39,7 +39,7 @@ void RegExToAFDConverter::setAlphabet(const std::string &alphabet)
     this->alphabet.insert(alphabet.substr(prev_pos)[0]);
 }
 
-void RegExToAFDConverter::readExpression(std::ifstream &fin)
+void RegExToDFAConverter::readExpression(std::ifstream &fin)
 {
     std::getline(fin, expression);
     if (!fin)
@@ -48,20 +48,20 @@ void RegExToAFDConverter::readExpression(std::ifstream &fin)
     }
 }
 
-void RegExToAFDConverter::buildAFD()
+void RegExToDFAConverter::buildAFD()
 {
     setExtendedPostfixExpression();
     parseExtendedPostfixExpression();
     setAFD();
 }
 
-void RegExToAFDConverter::setExtendedPostfixExpression()
+void RegExToDFAConverter::setExtendedPostfixExpression()
 {
     extendedPostfixExpression = std::move(convertExpressionToPostfixForm());
     extendedPostfixExpression += "#.";
 }
 
-std::string RegExToAFDConverter::convertExpressionToPostfixForm()
+std::string RegExToDFAConverter::convertExpressionToPostfixForm()
 {
     std::stack<char> operatorsStack;
     std::queue<char> postfixQueue;
@@ -76,7 +76,7 @@ std::string RegExToAFDConverter::convertExpressionToPostfixForm()
     return convertPostfixQueueToString(postfixQueue);
 }
 
-void RegExToAFDConverter::handleOperator(char op, std::stack<char> &operatorsStack, std::queue<char> &postfixQueue)
+void RegExToDFAConverter::handleOperator(char op, std::stack<char> &operatorsStack, std::queue<char> &postfixQueue)
 {
     if (op == '(' || !operatorsStack.empty() && operatorsStack.top() == '(')
         operatorsStack.push(op);
@@ -100,7 +100,7 @@ void RegExToAFDConverter::handleOperator(char op, std::stack<char> &operatorsSta
     }
 }
 
-bool RegExToAFDConverter::compareOperatorPrecedence(char op1, char op2)
+bool RegExToDFAConverter::compareOperatorPrecedence(char op1, char op2)
 {
     if (op1 == '*')
         return true;
@@ -111,7 +111,7 @@ bool RegExToAFDConverter::compareOperatorPrecedence(char op1, char op2)
     return false;
 }
 
-void RegExToAFDConverter::addRemainingOperators(std::stack<char> &operatorsStack, std::queue<char> &postfixQueue)
+void RegExToDFAConverter::addRemainingOperators(std::stack<char> &operatorsStack, std::queue<char> &postfixQueue)
 {
     while (!operatorsStack.empty())
     {
@@ -120,7 +120,7 @@ void RegExToAFDConverter::addRemainingOperators(std::stack<char> &operatorsStack
     }
 }
 
-std::string RegExToAFDConverter::convertPostfixQueueToString(std::queue<char> &postfixQueue)
+std::string RegExToDFAConverter::convertPostfixQueueToString(std::queue<char> &postfixQueue)
 {
     std::string result;
     result.reserve(postfixQueue.size() + 2);
@@ -132,7 +132,7 @@ std::string RegExToAFDConverter::convertPostfixQueueToString(std::queue<char> &p
     return result;
 }
 
-void RegExToAFDConverter::parseExtendedPostfixExpression()
+void RegExToDFAConverter::parseExtendedPostfixExpression()
 {
     std::stack<Node> depthFirstStack;
     int letterIndex = 1;
@@ -158,7 +158,7 @@ void RegExToAFDConverter::parseExtendedPostfixExpression()
     root = depthFirstStack.top();
 }
 
-void RegExToAFDConverter::traverseKleeneStarNode(std::stack<Node> & depthFirstStack)
+void RegExToDFAConverter::traverseKleeneStarNode(std::stack<Node> & depthFirstStack)
 {
     Node top = depthFirstStack.top();
     depthFirstStack.pop();
@@ -177,7 +177,7 @@ void RegExToAFDConverter::traverseKleeneStarNode(std::stack<Node> & depthFirstSt
     }
 }
 
-void RegExToAFDConverter::traverseUnionNode(std::stack<Node> & depthFirstStack)
+void RegExToDFAConverter::traverseUnionNode(std::stack<Node> & depthFirstStack)
 {
     Node right = depthFirstStack.top();
     depthFirstStack.pop();
@@ -190,7 +190,7 @@ void RegExToAFDConverter::traverseUnionNode(std::stack<Node> & depthFirstStack)
     depthFirstStack.push(Node(firstPos, lastPos, left.nullable || right.nullable));
 }
 
-void RegExToAFDConverter::traverseConcatenationNode(std::stack<Node> & depthFirstStack)
+void RegExToDFAConverter::traverseConcatenationNode(std::stack<Node> & depthFirstStack)
 {
     Node right = depthFirstStack.top();
     depthFirstStack.pop();
@@ -214,7 +214,7 @@ void RegExToAFDConverter::traverseConcatenationNode(std::stack<Node> & depthFirs
     }
 }
 
-std::set<int> RegExToAFDConverter::getConcatenationNodeFirstPos(Node &right, Node &left)
+std::set<int> RegExToDFAConverter::getConcatenationNodeFirstPos(Node &right, Node &left)
 {
     std::set<int> firstPos;
     if (left.nullable)
@@ -224,7 +224,7 @@ std::set<int> RegExToAFDConverter::getConcatenationNodeFirstPos(Node &right, Nod
     return firstPos;
 }
 
-std::set<int> RegExToAFDConverter::getConcatenationNodeLastPos(Node &right, Node &left)
+std::set<int> RegExToDFAConverter::getConcatenationNodeLastPos(Node &right, Node &left)
 {
     std::set<int> lastPos;
     if (right.nullable)
@@ -234,7 +234,7 @@ std::set<int> RegExToAFDConverter::getConcatenationNodeLastPos(Node &right, Node
     return lastPos;
 }
 
-void RegExToAFDConverter::setAFD()
+void RegExToDFAConverter::setAFD()
 {
     AFDNode *startState = new AFDNode(root.firstPos);
     afd.startNode = startState;
@@ -253,7 +253,7 @@ void RegExToAFDConverter::setAFD()
     }
 }
 
-void RegExToAFDConverter::addNextStatesForCurrentState(AFDNode *currentState, std::set<AFDNode *> &visitedNodes, std::deque<AFDNode *> &breadthFirstQueue)
+void RegExToDFAConverter::addNextStatesForCurrentState(AFDNode *currentState, std::set<AFDNode *> &visitedNodes, std::deque<AFDNode *> &breadthFirstQueue)
 {
     auto stateLetterToIndices = std::move(groupPositionsByLetter(currentState->pos));
     auto stateEqualityPredicate = [](std::set<int> &nextStatePositions)
@@ -282,7 +282,7 @@ void RegExToAFDConverter::addNextStatesForCurrentState(AFDNode *currentState, st
     }
 }
 
-std::map<char, std::set<int>> RegExToAFDConverter::groupPositionsByLetter(std::set<int> &positions)
+std::map<char, std::set<int>> RegExToDFAConverter::groupPositionsByLetter(std::set<int> &positions)
 {
     std::map<char, std::set<int>> groupedPositions;
     for (int pos : positions)
@@ -296,7 +296,7 @@ std::map<char, std::set<int>> RegExToAFDConverter::groupPositionsByLetter(std::s
     return groupedPositions;
 }
 
-std::set<int> RegExToAFDConverter::getUnionOfPositionsFollowPos(std::set<int> &positions)
+std::set<int> RegExToDFAConverter::getUnionOfPositionsFollowPos(std::set<int> &positions)
 {
     if (positions.size() == 1)
         return followPosTable[*positions.begin()];
@@ -309,7 +309,7 @@ std::set<int> RegExToAFDConverter::getUnionOfPositionsFollowPos(std::set<int> &p
     return positionsFollowPosUnion;
 }
 
-void RegExToAFDConverter::writeDOTFile(const std::string &outputFilename)
+void RegExToDFAConverter::writeDOTFile(const std::string &outputFilename)
 {
     std::ofstream fout(outputFilename);
     std::queue<AFDNode *> breadthFirstQueue;
@@ -331,7 +331,7 @@ void RegExToAFDConverter::writeDOTFile(const std::string &outputFilename)
     fout.close();
 }
 
-void RegExToAFDConverter::writeStartAndFinalStates(std::ofstream & fout) {
+void RegExToDFAConverter::writeStartAndFinalStates(std::ofstream & fout) {
     fout << "\"\"[shape=none, height=.0, width=.0]";
     fout << "\"\"->" << std::move(positionsToString(afd.startNode->pos)) << std::endl;
     for (AFDNode *finalNode : afd.finalNodes)
@@ -340,7 +340,7 @@ void RegExToAFDConverter::writeStartAndFinalStates(std::ofstream & fout) {
     }
 }
 
-void RegExToAFDConverter::writeTransitions(std::ofstream & fout, AFDNode * currentState, std::queue<AFDNode *>& breadthFirstQueue) {
+void RegExToDFAConverter::writeTransitions(std::ofstream & fout, AFDNode * currentState, std::queue<AFDNode *>& breadthFirstQueue) {
     for (auto &transition : currentState->nextNode)
     {
         fout << std::move(positionsToString(currentState->pos)) << "->" << std::move(positionsToString(transition.second->pos)) << "[label=\"" << transition.first << "\"]\n";
@@ -348,7 +348,7 @@ void RegExToAFDConverter::writeTransitions(std::ofstream & fout, AFDNode * curre
     }
 }
 
-std::string RegExToAFDConverter::positionsToString(const std::set<int> &positions)
+std::string RegExToDFAConverter::positionsToString(const std::set<int> &positions)
 {
     std::string s;
     s.reserve(positions.size() * 2 + 3);

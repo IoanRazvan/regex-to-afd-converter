@@ -1,5 +1,5 @@
-#ifndef REG_TO_AFD_CONVERTER
-#define REG_TO_AFD_CONVERTER
+#ifndef REG_TO_DFA_CONVERTER
+#define REG_TO_DFA_CONVERTER
 
 #include <fstream>
 #include <string>
@@ -9,7 +9,7 @@
 #include <deque>
 #include <map>
 
-class RegExToAFDConverter
+class RegExToDFAConverter
 {
 private:
     struct Node
@@ -76,7 +76,7 @@ private:
 
 
 public:
-    RegExToAFDConverter(const std::string &filename) : filename(filename)
+    RegExToDFAConverter(const std::string &filename) : filename(filename)
     {
     }
     void parseFile();
