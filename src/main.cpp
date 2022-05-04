@@ -5,6 +5,6 @@ int main()
     RegExToDFAConverter converter("input.txt");
     converter.parseFile();
     converter.buildAFD();
-    converter.writeDOTFile("afd.gv");
+    converter.writeDOTFile("dfa.gv");
     return 0;
 }
