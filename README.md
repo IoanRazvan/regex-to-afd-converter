@@ -55,3 +55,13 @@ dot -Tpng dfa.gv -o dfa.png
 ```
 
 this will produce a png file `dfa.png` containing the representation of the automata.
+
+For example the following input:
+
+```
+a b c
+(a|b.b)*.a.a.(b|c)*.c
+```
+
+will produce a dot file with a visual representation which looks like this:
+![example output](example/dfa.svg)
